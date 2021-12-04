@@ -8,7 +8,8 @@ module.exports = {
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
 
   transform: {
-    "^.+\\.vue$": "vue-jest",
+    ".*\\.(vue)$": "vue-jest",
+    "^.+\\.tsx?$": "ts-jest",
   },
   transformIgnorePatterns: ["/src/plugins/*", "/node_modules"],
   moduleFileExtensions: ["ts", "tsx", "js", "vue", "pug"],
