@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import SnakeCanvas from './SnakeCanvas'
+import SnakeCanvas from './SnakeCanvas.vue'
 
 describe('Snake Canvas Specs', () => {
   let wrapper: any
@@ -10,7 +10,10 @@ describe('Snake Canvas Specs', () => {
 
   afterEach(() => wrapper.unmount())
 
-  it.todo('renders a canvas')
+  it('renders a canvas', () => {
+    expect(wrapper.find('[data-test="snake-canvas"]').exists()).toBe(true)
+  })
+
   it.todo('clears the canvas')
   it.todo('starts the game')
   it.todo('stops the game')
