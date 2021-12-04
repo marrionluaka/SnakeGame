@@ -9,7 +9,6 @@ module.exports = {
   transform: {
     '^.+\\.vue$': 'vue-jest'
   },
-  setupFiles: ['jest-canvas-mock'],
   transformIgnorePatterns: ['/src/plugins/*', '/node_modules'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'vue', 'pug'],
   globals: {
