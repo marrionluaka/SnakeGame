@@ -3,7 +3,8 @@ canvas(ref="canvas" data-test="snake-canvas")
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, ref, Ref, watchEffect } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, Ref } from 'vue'
+import { createAnimation } from '../modules/animationModule'
 
 export default defineComponent({
   name: 'SnakeCanvas',
@@ -11,10 +12,17 @@ export default defineComponent({
   setup() {
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
 
-    watchEffect(() => {
-      if (canvas.value) {
-        _draw(canvas.value, canvas.value.getContext('2d'))
-      }
+    onMounted(() => {
+      if (!canvas.value) return
+
+      _draw(canvas.value, canvas.value.getContext('2d'))
+
+      const gameLoop = createAnimation(() =>
+        setTimeout(() => {
+          _draw(canvas.value as HTMLCanvasElement, canvas.value?.getContext('2d') as CanvasRenderingContext2D)
+        }, 1000 / 24)
+      )
+      gameLoop.start()
     })
 
     onUnmounted(() => {})

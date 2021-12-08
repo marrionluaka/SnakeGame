@@ -1,6 +1,11 @@
-import { once } from 'ramda'
 import { mount } from '@vue/test-utils'
 import SnakeCanvas from './SnakeCanvas.vue'
+
+const mockAnimation = {
+  start: jest.fn(),
+  stop: jest.fn()
+}
+jest.mock('../modules/animationModule', () => ({ createAnimation: () => mockAnimation }))
 
 describe('Snake Canvas Specs', () => {
   let wrapper: any
@@ -12,8 +17,6 @@ describe('Snake Canvas Specs', () => {
     width: { value: 100, writable: true },
     getContext: { value: jest.fn().mockReturnValue(ctx) }
   })
-
-  window.requestAnimationFrame.prototype = jest.fn().mockImplementation(once(cb => cb(1)))
 
   beforeEach(() => {
     wrapper = mount(SnakeCanvas)
@@ -27,13 +30,11 @@ describe('Snake Canvas Specs', () => {
     expect(wrapper.find('[data-test="snake-canvas"]').exists()).toBe(true)
   })
 
-  it('clears the canvas when the game starts', () => {
+  it('starts the game', () => {
     expect(ctx?.fillRect).toBeCalledWith(0, 0, 100, 100)
+    expect(mockAnimation.start).toHaveBeenCalled()
   })
 
-  it.todo('starts the game')
-  it.todo('stops the game')
-  it.todo('draws a snake')
   it.todo('draws an apple')
   it.todo('clears the canvas when the snake eats itself')
   it.todo('clears the canvas when the snake collides with the walls')
