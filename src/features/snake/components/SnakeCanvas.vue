@@ -5,30 +5,34 @@ canvas(ref="canvas" data-test="snake-canvas")
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, Ref } from 'vue'
 import { createAnimation } from '../modules/animationModule'
+import { GameState, getNextState } from '../modules/snakeModule'
 
 export default defineComponent({
   name: 'SnakeCanvas',
 
   setup() {
+    const gameState: Ref<GameState> = ref({ snake: [] })
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
 
+    const gameLoop = createAnimation(() =>
+      setTimeout(() => {
+        gameState.value = getNextState(gameState.value)
+        _draw(canvas.value as HTMLCanvasElement, canvas.value?.getContext('2d') as CanvasRenderingContext2D)
+      }, 1000 / 24)
+    )
+
     onMounted(() => {
-      if (!canvas.value) return
-
-      _draw(canvas.value, canvas.value.getContext('2d'))
-
-      const gameLoop = createAnimation(() =>
-        setTimeout(() => {
-          _draw(canvas.value as HTMLCanvasElement, canvas.value?.getContext('2d') as CanvasRenderingContext2D)
-        }, 1000 / 24)
-      )
       gameLoop.start()
     })
 
-    onUnmounted(() => {})
+    onUnmounted(() => {
+      gameLoop.stop()
+    })
 
     const _draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
       _clearCanvas(canvas, ctx)
+
+      gameState.value.snake.map(({ x, y }) => ctx?.fillRect(x, y, 1, 1))
     }
 
     const _clearCanvas = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
