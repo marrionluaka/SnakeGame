@@ -31,8 +31,6 @@ export default defineComponent({
 
     const _draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
       _clearCanvas(canvas, ctx)
-
-      gameState.value.snake.map(({ x, y }) => ctx?.fillRect(x, y, 1, 1))
     }
 
     const _clearCanvas = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {

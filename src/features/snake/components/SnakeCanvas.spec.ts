@@ -1,20 +1,15 @@
 import { mount } from '@vue/test-utils'
 import SnakeCanvas from './SnakeCanvas.vue'
-import { getNextState } from '../modules/snakeModule'
 
 const mockAnimation = {
   start: jest.fn(),
   stop: jest.fn()
 }
 jest.mock('../modules/animationModule', () => ({
-  createAnimation: (fn: Function) => {
+  createAnimation: jest.fn().mockImplementation(fn => {
     fn()
     return mockAnimation
-  }
-}))
-
-jest.mock('../modules/snakeModule', () => ({
-  getNextState: jest.fn().mockReturnValue({ snake: [] })
+  })
 }))
 
 describe('Snake Canvas Specs', () => {
@@ -52,23 +47,15 @@ describe('Snake Canvas Specs', () => {
     expect(mockAnimation.stop).toHaveBeenCalled()
   })
 
-  it('draws a snake', () => {
-    ;(getNextState as jest.Mock).mockReturnValue({
-      snake: [
-        { x: 1, y: 1 },
-        { x: 2, y: 1 }
-      ]
-    })
-
-    wrapper = mount(SnakeCanvas)
-    jest.runAllTimers()
-
-    expect(ctx?.fillRect).toBeCalledWith(1, 1, 1, 1)
-    expect(ctx?.fillRect).toBeCalledWith(2, 1, 1, 1)
-  })
-
   it.todo('draws an apple')
-  it.todo('clears the canvas when the snake eats itself')
-  it.todo('clears the canvas when the snake collides with the walls')
+
+  it.todo('draws a snake')
+
   it.todo('moves the snake upwards, downwards, left and right')
+
+  it.todo('draws a snake eating an apple')
+
+  it.todo('stops the game when the snake eats itself')
+
+  it.todo('stops the game when the snake collides with the walls')
 })
