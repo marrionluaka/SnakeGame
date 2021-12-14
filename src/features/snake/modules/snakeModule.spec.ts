@@ -1,4 +1,4 @@
-import { getNextState, DIRECTION, GameState } from './snakeModule'
+import { getNextState, enqueueDirection, DIRECTION, GameState } from './snakeModule'
 
 describe('snakeModule specs', () => {
   const initialState = {
@@ -29,5 +29,15 @@ describe('snakeModule specs', () => {
   it('returns the latest direction command', () => {
     const nextState = getNextState({ ...initialState, moves: [DIRECTION.RIGHT, DIRECTION.UP] } as unknown as GameState)
     expect(nextState).toEqual({ ...initialState, moves: [DIRECTION.UP] })
+  })
+
+  it('moves the snake towards a given direction', () => {
+    const nextState = enqueueDirection(initialState as unknown as GameState, DIRECTION.DOWN)
+    expect(nextState).toEqual({ ...initialState, moves: [DIRECTION.RIGHT, DIRECTION.DOWN] })
+  })
+
+  it('prevents the snake from going the opposite direction it is currently moving in', () => {
+    const nextState = enqueueDirection(initialState as unknown as GameState, DIRECTION.LEFT)
+    expect(nextState).toEqual({ ...initialState, moves: [DIRECTION.RIGHT] })
   })
 })
