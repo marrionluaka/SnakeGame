@@ -1,4 +1,4 @@
-import { applySpec, curry, drop, equals, mathMod, merge, prop } from 'ramda'
+import { applySpec, curry, drop, dropLast, equals, mathMod, merge, prop } from 'ramda'
 
 type Point = {
   x: number
@@ -27,13 +27,15 @@ const _random = curry((min, max) => Math.floor(Math.random() * max) + min)
 
 const _willEat: (state: GameState) => boolean = state => equals(_getNextHead(state), state.apple)
 
-const _isValidMove: (move: Point, state: GameState) => boolean = (move, state) => {
-  return state.moves[0].x + move.x != 0 || state.moves[0].y + move.y != 0
-}
+const _isValidMove: (move: Point, state: GameState) => boolean = (move, state) =>
+  state.moves[0].x + move.x != 0 || state.moves[0].y + move.y != 0
 
 const _getNextApple: (state: GameState) => Point = state => (_willEat(state) ? _getNextApplePosition(state) : state.apple)
 
 const _getNextMoves: (state: GameState) => Point[] = state => (state.moves.length > 1 ? drop(1, state.moves) : state.moves)
+
+const _getNextSnake: (state: GameState) => Point[] = state =>
+  _willEat(state) ? [_getNextHead(state)].concat(state.snake) : [_getNextHead(state)].concat(dropLast(1, state.snake))
 
 const _getNextHead: (state: GameState) => Point = state =>
   !state.snake.length
@@ -46,12 +48,11 @@ const getNextState: (gameState: GameState) => GameState = applySpec({
   cols: prop('cols'),
   rows: prop('rows'),
   moves: _getNextMoves,
-  snake: prop('snake'),
+  snake: _getNextSnake,
   apple: _getNextApple
 })
 
-const enqueueDirection: (state: GameState, move: Point) => GameState = (state, move) => {
-  return _isValidMove(move, state) ? merge(state, { moves: state.moves.concat([move]) }) : state
-}
+const enqueueDirection: (state: GameState, move: Point) => GameState = (state, move) =>
+  _isValidMove(move, state) ? { ...state, moves: state.moves.concat([move]) } : state
 
 export { getNextState, enqueueDirection }
