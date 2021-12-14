@@ -16,7 +16,7 @@ export interface GameState extends Grid {
   moves: Point[]
 }
 
-const _random: (min: number) => (max: number) => number = curry((min, max) => Math.floor(Math.random() * max) + min)
+const _random = curry((min, max) => Math.floor(Math.random() * max) + min)
 
 const _willEat: (state: GameState) => boolean = state => equals(_getNextHead(state), state.apple)
 
@@ -27,7 +27,7 @@ const _getNextHead: (state: GameState) => Point = state =>
     ? { x: 2, y: 2 }
     : { x: mathMod(state.snake[0].x + state.moves[0].x, state.cols), y: mathMod(state.snake[0].y + state.moves[0].y, state.rows) }
 
-const _getNextApplePosition: (grid: Grid) => Point = grid => ({ x: _random(0)(grid.cols - 1), y: _random(0)(grid.rows - 1) })
+const _getNextApplePosition: (grid: Grid) => Point = grid => ({ x: _random(0, grid.cols - 1), y: _random(0, grid.rows - 1) })
 
 const getNextState: (gameState: GameState) => GameState = applySpec({
   cols: prop('cols'),
