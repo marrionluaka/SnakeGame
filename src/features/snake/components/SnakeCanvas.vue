@@ -11,7 +11,13 @@ export default defineComponent({
   name: 'SnakeCanvas',
 
   setup() {
-    const gameState: Ref<GameState> = ref({ snake: [] })
+    const gameState: Ref<GameState> = ref({
+      cols: 20,
+      rows: 14,
+      moves: [],
+      snake: [],
+      apple: { x: 16, y: 2 }
+    })
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
 
     const gameLoop = createAnimation(() =>
