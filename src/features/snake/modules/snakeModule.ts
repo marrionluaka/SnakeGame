@@ -1,4 +1,4 @@
-import { applySpec, curry, drop, dropLast, equals, mathMod, merge, prop } from 'ramda'
+import { applySpec, curry, drop, dropLast, equals, mathMod, prop } from 'ramda'
 
 type Point = {
   x: number
