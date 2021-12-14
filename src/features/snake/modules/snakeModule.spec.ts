@@ -1,12 +1,16 @@
-import { getNextState, GameState } from './snakeModule'
+import { getNextState, DIRECTION, GameState } from './snakeModule'
 
 describe('snakeModule specs', () => {
-  it("returns the apple's current location", () => {
-    const nextState = getNextState({
-      snake: [],
-      apple: { x: 12, y: 4 }
-    } as unknown as GameState)
+  const initialState = {
+    cols: 20,
+    rows: 14,
+    snake: [],
+    moves: [DIRECTION.RIGHT],
+    apple: {}
+  }
 
+  it("returns the apple's current location", () => {
+    const nextState = getNextState({ ...initialState, apple: { x: 12, y: 4 } } as unknown as GameState)
     expect(nextState).toEqual(nextState)
   })
 
@@ -14,13 +18,16 @@ describe('snakeModule specs', () => {
     jest.spyOn(Math, 'random').mockReturnValue(0.3)
 
     const nextState = getNextState({
-      cols: 20,
-      rows: 14,
+      ...initialState,
       snake: [{ x: 12, y: 4 }],
-      moves: [{ x: 1, y: 0 }],
       apple: { x: 13, y: 4 }
     } as unknown as GameState)
 
     expect(nextState).toEqual({ ...nextState, apple: { x: 5, y: 3 } })
+  })
+
+  it('returns the latest direction command', () => {
+    const nextState = getNextState({ ...initialState, moves: [DIRECTION.RIGHT, DIRECTION.UP] } as unknown as GameState)
+    expect(nextState).toEqual({ ...initialState, moves: [DIRECTION.UP] })
   })
 })

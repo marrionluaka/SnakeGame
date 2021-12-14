@@ -14,7 +14,7 @@ export default defineComponent({
     const gameState: Ref<GameState> = ref({
       cols: 20,
       rows: 14,
-      moves: [],
+      moves: [{ x: 1, y: 0 }],
       snake: [],
       apple: { x: 16, y: 2 }
     })
@@ -37,6 +37,11 @@ export default defineComponent({
 
     const _draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
       _clearCanvas(canvas, ctx)
+      _drawApple(ctx, gameState.value)
+    }
+
+    const _drawApple: (ctx: CanvasRenderingContext2D | null, state: GameState) => void = (ctx, state) => {
+      ctx?.fillRect(state.apple.x, state.apple.y, 1, 1)
     }
 
     const _clearCanvas = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {

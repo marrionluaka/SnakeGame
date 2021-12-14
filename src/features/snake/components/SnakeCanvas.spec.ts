@@ -12,7 +12,7 @@ jest.mock('../modules/animationModule', () => ({
   })
 }))
 
-describe.skip('Snake Canvas Specs', () => {
+describe('Snake Canvas Specs', () => {
   let wrapper: any
 
   const ctx = { fillRect: jest.fn() } as unknown as CanvasRenderingContext2D | null

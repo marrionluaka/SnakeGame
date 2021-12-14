@@ -1,4 +1,4 @@
-import { applySpec, curry, equals, mathMod, prop } from 'ramda'
+import { applySpec, curry, drop, equals, mathMod, prop } from 'ramda'
 
 type Point = {
   x: number
@@ -16,11 +16,20 @@ export interface GameState extends Grid {
   moves: Point[]
 }
 
+export const DIRECTION = Object.freeze({
+  UP: { x: 0, y: -1 },
+  LEFT: { x: -1, y: 0 },
+  DOWN: { x: 0, y: 1 },
+  RIGHT: { x: 1, y: 0 }
+})
+
 const _random = curry((min, max) => Math.floor(Math.random() * max) + min)
 
 const _willEat: (state: GameState) => boolean = state => equals(_getNextHead(state), state.apple)
 
 const _getNextApple: (state: GameState) => Point = state => (_willEat(state) ? _getNextApplePosition(state) : state.apple)
+
+const _getNextMoves: (state: GameState) => Point[] = state => (state.moves.length > 1 ? drop(1, state.moves) : state.moves)
 
 const _getNextHead: (state: GameState) => Point = state =>
   !state.snake.length
@@ -32,7 +41,7 @@ const _getNextApplePosition: (grid: Grid) => Point = grid => ({ x: _random(0, gr
 const getNextState: (gameState: GameState) => GameState = applySpec({
   cols: prop('cols'),
   rows: prop('rows'),
-  moves: prop('moves'),
+  moves: _getNextMoves,
   snake: prop('snake'),
   apple: _getNextApple
 })
