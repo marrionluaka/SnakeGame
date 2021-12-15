@@ -14,7 +14,7 @@ describe('Animations specs', () => {
     window.cancelAnimationFrame = cancelAnimationFrameSpy
   })
 
-  it.only('starts an animation', () => {
+  it('starts an animation', () => {
     const fn = jest.fn()
     const animation = createAnimation(fn)
 
