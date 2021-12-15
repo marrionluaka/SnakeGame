@@ -1,17 +1,20 @@
 <template lang="pug">
-canvas(ref="canvas" data-test="snake-canvas" @keydown="onKeydown")
+div
+  canvas(ref="canvas" width="700" height="500" data-test="snake-canvas")
+  button(@click="gameStart") Start
+  button(@click="gameStop") Stop
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, Ref } from 'vue'
-import { createAnimation } from '../modules/animationModule'
+import { createAnimation, Animation } from '../modules/animationModule'
 import { DIRECTION, enqueueDirection, GameState, getNextState } from '../modules/snakeModule'
 
 enum KeyEvent {
-  UP = 'up',
-  RIGHT = 'right',
-  DOWN = 'down',
-  LEFT = 'left'
+  UP = 'ArrowUp',
+  RIGHT = 'ArrowRight',
+  DOWN = 'ArrowDown',
+  LEFT = 'ArrowLeft'
 }
 
 export default defineComponent({
@@ -28,14 +31,24 @@ export default defineComponent({
     const gameState: Ref<GameState> = ref(initialGameState)
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
 
-    const gameLoop = createAnimation(() =>
-      setTimeout(() => {
-        gameState.value = getNextState(gameState.value)
-        _draw(canvas.value as HTMLCanvasElement, canvas.value?.getContext('2d') as CanvasRenderingContext2D)
-      }, 1000 / 24)
-    )
+    let animation: Animation
 
-    const onKeydown = (e: KeyboardEvent) => {
+    onMounted(() => {
+      window.addEventListener('keydown', _onKeydown)
+      animation = createAnimation(_gameLoop)
+      animation.start()
+    })
+
+    onUnmounted(() => {
+      animation.stop()
+    })
+
+    function _gameLoop() {
+      gameState.value = getNextState(gameState.value)
+      _draw(canvas.value as HTMLCanvasElement, canvas.value?.getContext('2d') as CanvasRenderingContext2D)
+    }
+
+    function _onKeydown(e: KeyboardEvent) {
       switch (e.key) {
         case 'w':
         case 'h':
@@ -60,49 +73,66 @@ export default defineComponent({
       }
     }
 
-    onMounted(() => {
-      gameLoop.start()
-    })
-
-    onUnmounted(() => {
-      gameLoop.stop()
-    })
-
-    const _draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
+    function _draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void {
+      ctx && (ctx.fillStyle = '#232323')
       _clearCanvas(canvas, ctx)
+
+      ctx && (ctx.fillStyle = 'rgb(0,200,50)')
       _drawSnake(ctx, gameState.value)
+
+      ctx && (ctx.fillStyle = 'rgb(255,50,0)')
       _drawApple(ctx, gameState.value)
       _resetGame(canvas, ctx)
     }
 
-    const _clearCanvas = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
+    function _clearCanvas(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void {
       ctx?.fillRect(0, 0, canvas.width, canvas.height)
     }
 
-    const _drawSnake = (ctx: CanvasRenderingContext2D | null, state: GameState): void => {
+    function _drawSnake(ctx: CanvasRenderingContext2D | null, state: GameState): void {
       state.snake.forEach(p => ctx?.fillRect(_normalizeX(p.x), _normalizeY(p.y), _normalizeX(1), _normalizeY(1)))
     }
 
-    const _drawApple = (ctx: CanvasRenderingContext2D | null, state: GameState): void => {
+    function _drawApple(ctx: CanvasRenderingContext2D | null, state: GameState): void {
       ctx?.fillRect(_normalizeX(state.apple.x), _normalizeY(state.apple.y), _normalizeX(1), _normalizeY(1))
     }
 
-    const _resetGame = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
+    function _resetGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void {
       if (gameState.value.snake.length) return
 
+      ctx && (ctx.fillStyle = 'rgb(255,0,0)')
       _clearCanvas(canvas, ctx)
       gameState.value = initialGameState
     }
 
-    const _normalizeX = (x: number): number => {
+    function _normalizeX(x: number): number {
       return Math.round((x * (canvas.value as HTMLCanvasElement).width) / gameState.value.cols)
     }
 
-    const _normalizeY = (y: number): number => {
-      return Math.round((y * (canvas.value as HTMLCanvasElement).width) / gameState.value.rows)
+    function _normalizeY(y: number): number {
+      return Math.round((y * (canvas.value as HTMLCanvasElement).height) / gameState.value.rows)
     }
 
-    return { canvas, onKeydown }
+    return {
+      canvas,
+      gameStart: () => animation.start(),
+      gameStop: () => animation.stop()
+    }
   }
 })
 </script>
+
+<style>
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #121212;
+  text-align: center;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

@@ -1,27 +1,9 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+<template lang="pug">
+.flex.flex-col.h-screen
+  header.relative.z-10.flex-none.py-3.pl-5.pr-3.flex.items-center.space-x-4(class="sm:pl-6 sm:pr-4 md:pr-3.5 lg:px-6")
+    #nav.flex.flex-auto.items-center.min-w-0.space-x-5
+      router-link(to="/") Home
+
+  main.flex-grow.relative.border-t.border-gray-200(class="dark:border-gray-800")
+    router-view
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "./features/example/components/HelloWorld.vue";
-
-export default defineComponent({
-  name: "App",
-  components: {
-    HelloWorld,
-  },
-});
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

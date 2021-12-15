@@ -1,6 +1,7 @@
-import { mount } from '@vue/test-utils'
-import SnakeCanvas from './SnakeCanvas.vue'
 import { range } from 'ramda'
+import { mount } from '@vue/test-utils'
+
+import SnakeCanvas from './SnakeCanvas.vue'
 
 const mockAnimation = {
   start: jest.fn(),
@@ -21,21 +22,17 @@ describe('Snake Canvas Specs', () => {
   const ctx = { fillRect: jest.fn() } as unknown as CanvasRenderingContext2D | null
 
   Object.defineProperties(HTMLCanvasElement.prototype, {
-    height: { value: 100, writable: true },
-    width: { value: 100, writable: true },
+    height: { value: 100, writable: false },
+    width: { value: 100, writable: false },
     getContext: { value: jest.fn().mockReturnValue(ctx) }
   })
 
   beforeEach(() => {
     jest.spyOn(Math, 'random').mockReturnValue(0.3)
-    jest.useFakeTimers()
-
     wrapper = mount(SnakeCanvas)
-    jest.runAllTimers()
   })
 
   afterEach(() => {
-    jest.clearAllTimers()
     jest.clearAllMocks()
     wrapper.unmount()
   })
@@ -68,26 +65,21 @@ describe('Snake Canvas Specs', () => {
       ${'downwards'} | ${'keydown.down'} | ${[15, 21, 5, 7]}
     `('moves the snake $direction', async ({ event, expected }) => {
       wrapper = mount(SnakeCanvas)
-      jest.runAllTimers()
 
       await wrapper.trigger(event)
       range(0, 2).forEach(() => animationFn())
-      jest.runAllTimers()
 
       expect(ctx?.fillRect).toBeCalledWith(...expected)
     })
 
     it('moves the snake to the left', async () => {
       wrapper = mount(SnakeCanvas)
-      jest.runAllTimers()
 
       await wrapper.trigger('keydown.up')
       range(0, 2).forEach(() => animationFn())
-      jest.runAllTimers()
 
       await wrapper.trigger('keydown.left')
       range(0, 2).forEach(() => animationFn())
-      jest.runAllTimers()
 
       expect(ctx?.fillRect).toBeCalledWith(10, 0, 5, 7)
     })
@@ -95,8 +87,6 @@ describe('Snake Canvas Specs', () => {
 
   it('stops the game when the snake eats itself or collides with the walls', () => {
     range(0, 18).forEach(() => animationFn())
-    jest.runAllTimers()
-
     expect((ctx?.fillRect as jest.Mock).mock.calls.pop()).toEqual([0, 0, 100, 100])
   })
 })
