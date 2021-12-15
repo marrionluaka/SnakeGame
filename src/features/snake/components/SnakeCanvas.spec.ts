@@ -61,34 +61,36 @@ describe('Snake Canvas Specs', () => {
     expect(ctx?.fillRect).toBeCalledWith(10, 14, 5, 7)
   })
 
-  it.each`
-    direction      | event             | expected
-    ${'upwards'}   | ${'keydown.up'}   | ${[15, 7, 5, 7]}
-    ${'downwards'} | ${'keydown.down'} | ${[15, 21, 5, 7]}
-  `('moves the snake $direction', async ({ event, expected }) => {
-    wrapper = mount(SnakeCanvas)
-    jest.runAllTimers()
+  describe('snake movement specs', () => {
+    it.each`
+      direction      | event             | expected
+      ${'upwards'}   | ${'keydown.up'}   | ${[15, 7, 5, 7]}
+      ${'downwards'} | ${'keydown.down'} | ${[15, 21, 5, 7]}
+    `('moves the snake $direction', async ({ event, expected }) => {
+      wrapper = mount(SnakeCanvas)
+      jest.runAllTimers()
 
-    await wrapper.trigger(event)
-    range(0, 2).forEach(() => animationFn())
-    jest.runAllTimers()
+      await wrapper.trigger(event)
+      range(0, 2).forEach(() => animationFn())
+      jest.runAllTimers()
 
-    expect(ctx?.fillRect).toBeCalledWith(...expected)
-  })
+      expect(ctx?.fillRect).toBeCalledWith(...expected)
+    })
 
-  it('moves the snake to the left', async () => {
-    wrapper = mount(SnakeCanvas)
-    jest.runAllTimers()
+    it('moves the snake to the left', async () => {
+      wrapper = mount(SnakeCanvas)
+      jest.runAllTimers()
 
-    await wrapper.trigger('keydown.up')
-    range(0, 2).forEach(() => animationFn())
-    jest.runAllTimers()
+      await wrapper.trigger('keydown.up')
+      range(0, 2).forEach(() => animationFn())
+      jest.runAllTimers()
 
-    await wrapper.trigger('keydown.left')
-    range(0, 2).forEach(() => animationFn())
-    jest.runAllTimers()
+      await wrapper.trigger('keydown.left')
+      range(0, 2).forEach(() => animationFn())
+      jest.runAllTimers()
 
-    expect(ctx?.fillRect).toBeCalledWith(10, 0, 5, 7)
+      expect(ctx?.fillRect).toBeCalledWith(10, 0, 5, 7)
+    })
   })
 
   it.todo('draws a snake eating an apple')
