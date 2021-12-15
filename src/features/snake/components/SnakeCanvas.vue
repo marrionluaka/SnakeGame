@@ -36,15 +36,23 @@ export default defineComponent({
 
     const onKeydown = (e: KeyboardEvent) => {
       switch (e.key) {
+        case 'w':
+        case 'h':
         case KeyEvent.UP:
           gameState.value = enqueueDirection(gameState.value, DIRECTION.UP)
           break
+        case 'd':
+        case 'l':
         case KeyEvent.RIGHT:
           gameState.value = enqueueDirection(gameState.value, DIRECTION.RIGHT)
           break
+        case 's':
+        case 'k':
         case KeyEvent.DOWN:
           gameState.value = enqueueDirection(gameState.value, DIRECTION.DOWN)
           break
+        case 'a':
+        case 'j':
         case KeyEvent.LEFT:
           gameState.value = enqueueDirection(gameState.value, DIRECTION.LEFT)
           break
