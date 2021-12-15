@@ -93,9 +93,10 @@ describe('Snake Canvas Specs', () => {
     })
   })
 
-  it.todo('draws a snake eating an apple')
+  it('stops the game when the snake eats itself or collides with the walls', () => {
+    range(0, 18).forEach(() => animationFn())
+    jest.runAllTimers()
 
-  it.todo('stops the game when the snake eats itself')
-
-  it.todo('stops the game when the snake collides with the walls')
+    expect((ctx?.fillRect as jest.Mock).mock.calls.pop()).toEqual([0, 0, 100, 100])
+  })
 })

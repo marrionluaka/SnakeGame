@@ -18,13 +18,14 @@ export default defineComponent({
   name: 'SnakeCanvas',
 
   setup() {
-    const gameState: Ref<GameState> = ref({
+    const initialGameState = {
       cols: 20,
       rows: 14,
       moves: [DIRECTION.RIGHT],
       snake: [],
       apple: { x: 16, y: 2 }
-    })
+    }
+    const gameState: Ref<GameState> = ref(initialGameState)
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
 
     const gameLoop = createAnimation(() =>
@@ -71,6 +72,7 @@ export default defineComponent({
       _clearCanvas(canvas, ctx)
       _drawSnake(ctx, gameState.value)
       _drawApple(ctx, gameState.value)
+      _resetGame(canvas, ctx)
     }
 
     const _clearCanvas = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
@@ -83,6 +85,13 @@ export default defineComponent({
 
     const _drawApple = (ctx: CanvasRenderingContext2D | null, state: GameState): void => {
       ctx?.fillRect(_normalizeX(state.apple.x), _normalizeY(state.apple.y), _normalizeX(1), _normalizeY(1))
+    }
+
+    const _resetGame = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
+      if (gameState.value.snake.length) return
+
+      _clearCanvas(canvas, ctx)
+      gameState.value = initialGameState
     }
 
     const _normalizeX = (x: number): number => {
