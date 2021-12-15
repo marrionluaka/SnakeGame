@@ -69,4 +69,18 @@ describe('snakeModule specs', () => {
 
     expect(nextState.snake.length).toBe(0)
   })
+
+  it('returns an empty state when it crashes against the wall', () => {
+    const stateXPos = getNextState({ ...initialState, snake: [{ x: 19, y: 8 }] } as unknown as GameState)
+    expect(stateXPos.snake.length).toBe(0)
+
+    const stateXNeg = getNextState({ ...initialState, snake: [{ x: 0, y: 8 }], moves: [DIRECTION.LEFT] } as unknown as GameState)
+    expect(stateXNeg.snake.length).toBe(0)
+
+    const stateYPos = getNextState({ ...initialState, snake: [{ x: 10, y: 13 }], moves: [DIRECTION.DOWN] } as unknown as GameState)
+    expect(stateYPos.snake.length).toBe(0)
+
+    const stateYNeg = getNextState({ ...initialState, snake: [{ x: 10, y: 0 }], moves: [DIRECTION.UP] } as unknown as GameState)
+    expect(stateYNeg.snake.length).toBe(0)
+  })
 })
