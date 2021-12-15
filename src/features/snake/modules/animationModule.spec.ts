@@ -7,14 +7,14 @@ describe('Animations specs', () => {
   beforeEach(() => {
     window.requestAnimationFrame = jest.fn().mockImplementation(
       once(cb => {
-        cb(1)
-        return 1
+        cb(201)
+        return 201
       })
     )
     window.cancelAnimationFrame = cancelAnimationFrameSpy
   })
 
-  it('starts an animation', () => {
+  it.only('starts an animation', () => {
     const fn = jest.fn()
     const animation = createAnimation(fn)
 

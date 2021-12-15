@@ -1,7 +1,9 @@
 import { range } from 'ramda'
-import { mount } from '@vue/test-utils'
+import { mount, config } from '@vue/test-utils'
 
 import SnakeCanvas from './SnakeCanvas.vue'
+
+config.global.config.warnHandler = () => {}
 
 const mockAnimation = {
   start: jest.fn(),
@@ -60,25 +62,25 @@ describe('Snake Canvas Specs', () => {
 
   describe('snake movement specs', () => {
     it.each`
-      direction      | event             | expected
-      ${'upwards'}   | ${'keydown.up'}   | ${[15, 7, 5, 7]}
-      ${'downwards'} | ${'keydown.down'} | ${[15, 21, 5, 7]}
-    `('moves the snake $direction', async ({ event, expected }) => {
+      direction      | key            | expected
+      ${'downwards'} | ${'ArrowDown'} | ${[15, 21, 5, 7]}
+      ${'upwards'}   | ${'ArrowUp'}   | ${[15, 7, 5, 7]}
+    `('moves the snake $direction', ({ key, expected }) => {
       wrapper = mount(SnakeCanvas)
 
-      await wrapper.trigger(event)
+      window.dispatchEvent(new KeyboardEvent('keydown', { key }))
       range(0, 2).forEach(() => animationFn())
 
       expect(ctx?.fillRect).toBeCalledWith(...expected)
     })
 
-    it('moves the snake to the left', async () => {
+    it('moves the snake to the left', () => {
       wrapper = mount(SnakeCanvas)
 
-      await wrapper.trigger('keydown.up')
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }))
       range(0, 2).forEach(() => animationFn())
 
-      await wrapper.trigger('keydown.left')
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }))
       range(0, 2).forEach(() => animationFn())
 
       expect(ctx?.fillRect).toBeCalledWith(10, 0, 5, 7)
