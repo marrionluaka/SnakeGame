@@ -59,9 +59,6 @@ export default defineComponent({
       gameLoop.stop()
     })
 
-    const normalizeX = (x: number): number => Math.round((x * (canvas.value as HTMLCanvasElement).width) / gameState.value.cols)
-    const normalizeY = (y: number): number => Math.round((y * (canvas.value as HTMLCanvasElement).width) / gameState.value.rows)
-
     const _draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void => {
       _clearCanvas(canvas, ctx)
       _drawSnake(ctx, gameState.value)
@@ -73,12 +70,15 @@ export default defineComponent({
     }
 
     const _drawSnake = (ctx: CanvasRenderingContext2D | null, state: GameState): void => {
-      state.snake.forEach(p => ctx?.fillRect(normalizeX(p.x), normalizeY(p.y), normalizeX(1), normalizeY(1)))
+      state.snake.forEach(p => ctx?.fillRect(_normalizeX(p.x), _normalizeY(p.y), _normalizeX(1), _normalizeY(1)))
     }
 
     const _drawApple = (ctx: CanvasRenderingContext2D | null, state: GameState): void => {
-      ctx?.fillRect(normalizeX(state.apple.x), normalizeY(state.apple.y), normalizeX(1), normalizeY(1))
+      ctx?.fillRect(_normalizeX(state.apple.x), _normalizeY(state.apple.y), _normalizeX(1), _normalizeY(1))
     }
+
+    const _normalizeX = (x: number): number => Math.round((x * (canvas.value as HTMLCanvasElement).width) / gameState.value.cols)
+    const _normalizeY = (y: number): number => Math.round((y * (canvas.value as HTMLCanvasElement).width) / gameState.value.rows)
 
     return { canvas, onKeydown }
   }
