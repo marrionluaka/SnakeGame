@@ -77,8 +77,13 @@ export default defineComponent({
       ctx?.fillRect(_normalizeX(state.apple.x), _normalizeY(state.apple.y), _normalizeX(1), _normalizeY(1))
     }
 
-    const _normalizeX = (x: number): number => Math.round((x * (canvas.value as HTMLCanvasElement).width) / gameState.value.cols)
-    const _normalizeY = (y: number): number => Math.round((y * (canvas.value as HTMLCanvasElement).width) / gameState.value.rows)
+    const _normalizeX = (x: number): number => {
+      return Math.round((x * (canvas.value as HTMLCanvasElement).width) / gameState.value.cols)
+    }
+
+    const _normalizeY = (y: number): number => {
+      return Math.round((y * (canvas.value as HTMLCanvasElement).width) / gameState.value.rows)
+    }
 
     return { canvas, onKeydown }
   }
