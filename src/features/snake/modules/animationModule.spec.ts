@@ -29,6 +29,6 @@ describe('Animations specs', () => {
 
     animation.stop()
 
-    expect(cancelAnimationFrameSpy).toHaveBeenCalledWith(1)
+    expect(cancelAnimationFrameSpy).toHaveBeenCalledWith(201)
   })
 })
