@@ -1,12 +1,15 @@
 import { mount } from '@vue/test-utils'
 import SnakeCanvas from './SnakeCanvas.vue'
+import { range } from 'ramda'
 
 const mockAnimation = {
   start: jest.fn(),
   stop: jest.fn()
 }
+let animationFn: any
 jest.mock('../modules/animationModule', () => ({
   createAnimation: jest.fn().mockImplementation(fn => {
+    animationFn = fn
     fn()
     return mockAnimation
   })
@@ -24,13 +27,16 @@ describe('Snake Canvas Specs', () => {
   })
 
   beforeEach(() => {
+    jest.spyOn(Math, 'random').mockReturnValue(0.3)
     jest.useFakeTimers()
+
     wrapper = mount(SnakeCanvas)
     jest.runAllTimers()
   })
 
   afterEach(() => {
     jest.clearAllTimers()
+    jest.clearAllMocks()
     wrapper.unmount()
   })
 
@@ -47,11 +53,43 @@ describe('Snake Canvas Specs', () => {
     expect(mockAnimation.stop).toHaveBeenCalled()
   })
 
-  it.todo('draws an apple')
+  it('draws an apple', () => {
+    expect(ctx?.fillRect).toBeCalledWith(80, 14, 5, 7)
+  })
 
-  it.todo('draws a snake')
+  it('draws a snake', () => {
+    expect(ctx?.fillRect).toBeCalledWith(10, 14, 5, 7)
+  })
 
-  it.todo('moves the snake upwards, downwards, left and right')
+  it.each`
+    direction      | event             | expected
+    ${'upwards'}   | ${'keydown.up'}   | ${[15, 7, 5, 7]}
+    ${'downwards'} | ${'keydown.down'} | ${[15, 21, 5, 7]}
+  `('moves the snake $direction', async ({ event, expected }) => {
+    wrapper = mount(SnakeCanvas)
+    jest.runAllTimers()
+
+    await wrapper.trigger(event)
+    range(0, 2).forEach(() => animationFn())
+    jest.runAllTimers()
+
+    expect(ctx?.fillRect).toBeCalledWith(...expected)
+  })
+
+  it('moves the snake to the left', async () => {
+    wrapper = mount(SnakeCanvas)
+    jest.runAllTimers()
+
+    await wrapper.trigger('keydown.up')
+    range(0, 2).forEach(() => animationFn())
+    jest.runAllTimers()
+
+    await wrapper.trigger('keydown.left')
+    range(0, 2).forEach(() => animationFn())
+    jest.runAllTimers()
+
+    expect(ctx?.fillRect).toBeCalledWith(10, 0, 5, 7)
+  })
 
   it.todo('draws a snake eating an apple')
 
