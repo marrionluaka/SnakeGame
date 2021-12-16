@@ -10,13 +10,13 @@ type Grid = {
   rows: number
 }
 
-export interface GameState extends Grid {
+type GameState = Grid & {
   snake: Point[]
   apple: Point
   moves: Point[]
 }
 
-export const DIRECTION = Object.freeze({
+const DIRECTION = Object.freeze({
   UP: { x: 0, y: -1 },
   LEFT: { x: -1, y: 0 },
   DOWN: { x: 0, y: 1 },
@@ -63,4 +63,4 @@ const getNextState: (gameState: GameState) => GameState = applySpec({
 const enqueueDirection = (state: GameState, move: Point): GameState =>
   _isValidMove(move, state) ? { ...state, moves: state.moves.concat([move]) } : state
 
-export { getNextState, enqueueDirection }
+export { getNextState, enqueueDirection, GameState, DIRECTION }
