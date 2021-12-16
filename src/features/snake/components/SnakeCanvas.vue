@@ -28,7 +28,7 @@ export default defineComponent({
       baitEaten: 0,
       snake: [],
       moves: [DIRECTION.RIGHT],
-      apple: { x: 16, y: 2 }
+      bait: { x: 16, y: 2 }
     }
     const gameState: Ref<GameState> = ref(initialGameState)
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
@@ -90,7 +90,7 @@ export default defineComponent({
       _drawSnake(ctx, gameState.value)
 
       ctx && (ctx.fillStyle = 'rgb(255,50,0)')
-      _drawApple(ctx, gameState.value)
+      _drawBait(ctx, gameState.value)
       _resetGame(canvas, ctx)
     }
 
@@ -102,8 +102,8 @@ export default defineComponent({
       state.snake.forEach(p => ctx?.fillRect(_normalizeX(p.x), _normalizeY(p.y), _normalizeX(1), _normalizeY(1)))
     }
 
-    function _drawApple(ctx: CanvasRenderingContext2D | null, state: GameState): void {
-      ctx?.fillRect(_normalizeX(state.apple.x), _normalizeY(state.apple.y), _normalizeX(1), _normalizeY(1))
+    function _drawBait(ctx: CanvasRenderingContext2D | null, state: GameState): void {
+      ctx?.fillRect(_normalizeX(state.bait.x), _normalizeY(state.bait.y), _normalizeX(1), _normalizeY(1))
     }
 
     function _resetGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void {

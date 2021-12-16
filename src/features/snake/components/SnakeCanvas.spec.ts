@@ -55,7 +55,7 @@ describe('Snake Canvas Specs', () => {
     expect(mockAnimation.stop).toHaveBeenCalled()
   })
 
-  it('draws an apple', () => {
+  it('draws an bait', () => {
     expect(ctx?.fillRect).toBeCalledWith(80, 14, 5, 7)
   })
 
@@ -108,7 +108,7 @@ describe('Snake Canvas Specs', () => {
       rows: 14,
       snake: [{ x: 2, y: 2 }],
       moves: [DIRECTION.RIGHT],
-      apple: { x: 0, y: 0 }
+      bait: { x: 0, y: 0 }
     } as snakeModule.GameState)
 
     wrapper = mount(SnakeCanvas)
@@ -124,7 +124,7 @@ describe('Snake Canvas Specs', () => {
       rows: 14,
       snake: [{ x: 2, y: 2 }],
       moves: [DIRECTION.RIGHT],
-      apple: { x: 0, y: 0 }
+      bait: { x: 0, y: 0 }
     } as snakeModule.GameState)
 
     wrapper = mount(SnakeCanvas)
