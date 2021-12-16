@@ -1,9 +1,10 @@
 <template lang="pug">
 div
-  div(data-test="snake-score") Score: {{ score }}
+  .flex.justify-between.items-center
+    button.rounded-lg.p-4.bg-green-700.mb-4(data-test="snake-pause" @click="gameStart") Start
+    div(data-test="snake-score") Score: {{ score }}
+    button.rounded-lg.p-4.bg-red-700.mb-4(data-test="snake-unpause" @click="gameStop") Stop
   canvas(ref="canvas" width="700" height="500" data-test="snake-canvas")
-  button(data-test="snake-pause" @click="gameStart") Start
-  button(data-test="snake-unpause" @click="gameStop") Stop
 </template>
 
 <script lang="ts">
@@ -86,10 +87,10 @@ export default defineComponent({
       ctx && (ctx.fillStyle = '#232323')
       _clearCanvas(canvas, ctx)
 
-      ctx && (ctx.fillStyle = 'rgb(0,200,50)')
+      ctx && (ctx.fillStyle = '#B4D5AC')
       _drawSnake(ctx, gameState.value)
 
-      ctx && (ctx.fillStyle = 'rgb(255,50,0)')
+      ctx && (ctx.fillStyle = '#836953')
       _drawBait(ctx, gameState.value)
       _resetGame(canvas, ctx)
     }
@@ -109,7 +110,7 @@ export default defineComponent({
     function _resetGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D | null): void {
       if (gameState.value.snake.length) return
 
-      ctx && (ctx.fillStyle = 'rgb(255,0,0)')
+      ctx && (ctx.fillStyle = 'rgba(185, 28, 28, 1)')
       _clearCanvas(canvas, ctx)
       gameState.value = initialGameState
     }
@@ -146,17 +147,4 @@ export default defineComponent({
 })
 </script>
 
-<style>
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #121212;
-  text-align: center;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>
+<style></style>

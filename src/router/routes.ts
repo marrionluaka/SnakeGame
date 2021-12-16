@@ -2,8 +2,9 @@ export const SNAKE_GAME = 'SNAKE_GAME'
 
 const links = [
   {
+    title: 'Snake',
     alt: 'Snake Game',
-    img_path: 'https://via.placeholder.com/640x640',
+    img_path: require('../assets/snake-thumb.png'),
     route_params: { name: SNAKE_GAME }
   }
 ]

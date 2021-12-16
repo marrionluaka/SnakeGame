@@ -1,6 +1,5 @@
 <template lang="pug">
-main
-  h1 Snake Game
+main.snake-game.flex.justify-center.items-center.text-white.h-full
   SnakeCanvas
 </template>
 
@@ -14,3 +13,8 @@ export default defineComponent({
   components: { SnakeCanvas }
 })
 </script>
+
+<style lang="stylus" scoped>
+.snake-game
+  background: #121212
+</style>
