@@ -1,12 +1,13 @@
 <template lang="pug">
 div
+  div(data-test="snake-score") Score: {{ score }}
   canvas(ref="canvas" width="700" height="500" data-test="snake-canvas")
-  button(@click="gameStart") Start
-  button(@click="gameStop") Stop
+  button(data-test="snake-pause" @click="gameStart") Start
+  button(data-test="snake-unpause" @click="gameStop") Stop
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, Ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, watch, ref, Ref, ComputedRef, computed } from 'vue'
 import { createAnimation, Animation } from '../modules/animationModule'
 import { DIRECTION, enqueueDirection, GameState, getNextState } from '../modules/snakeModule'
 
@@ -24,12 +25,14 @@ export default defineComponent({
     const initialGameState = {
       cols: 20,
       rows: 14,
-      moves: [DIRECTION.RIGHT],
+      baitEaten: 0,
       snake: [],
+      moves: [DIRECTION.RIGHT],
       apple: { x: 16, y: 2 }
     }
     const gameState: Ref<GameState> = ref(initialGameState)
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
+    const score: ComputedRef<number> = computed(() => gameState.value.baitEaten)
 
     let animation: Animation
 
@@ -42,6 +45,12 @@ export default defineComponent({
     onUnmounted(() => {
       animation.stop()
     })
+
+    watch(
+      () => gameState.value.baitEaten,
+      (baitEaten: number) => animation.increaseSpeed(_getAnimationSpeed(baitEaten)),
+      { deep: true }
+    )
 
     function _gameLoop() {
       gameState.value = getNextState(gameState.value)
@@ -113,7 +122,22 @@ export default defineComponent({
       return Math.round((y * (canvas.value as HTMLCanvasElement).height) / gameState.value.rows)
     }
 
+    function _getAnimationSpeed(baitEaten: number): number {
+      if (baitEaten > 0 && baitEaten <= 5) {
+        return 200
+      } else if (baitEaten > 5 && baitEaten <= 10) {
+        return 100
+      } else if (baitEaten > 10 && baitEaten <= 15) {
+        return 50
+      } else if (baitEaten > 15) {
+        return 25
+      } else {
+        return 200
+      }
+    }
+
     return {
+      score,
       canvas,
       gameStart: () => animation.start(),
       gameStop: () => animation.stop()

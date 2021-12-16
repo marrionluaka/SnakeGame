@@ -83,4 +83,15 @@ describe('snakeModule specs', () => {
     const stateYNeg = getNextState({ ...initialState, snake: [{ x: 10, y: 0 }], moves: [DIRECTION.UP] } as unknown as GameState)
     expect(stateYNeg.snake.length).toBe(0)
   })
+
+  it('tracks the amount of bait eaten', () => {
+    const nextState = getNextState({
+      ...initialState,
+      baitEaten: 0,
+      snake: [{ x: 14, y: 7 }],
+      apple: { x: 15, y: 7 }
+    } as unknown as GameState)
+
+    expect(nextState.baitEaten).toBe(1)
+  })
 })

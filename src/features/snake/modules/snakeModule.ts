@@ -14,6 +14,7 @@ type GameState = Grid & {
   snake: Point[]
   apple: Point
   moves: Point[]
+  baitEaten: number
 }
 
 const DIRECTION = Object.freeze({
@@ -38,6 +39,8 @@ const _isValidMove = (move: Point, state: GameState): boolean => state.moves[0].
 
 const _getNextApple = (state: GameState): Point => (_willEat(state) ? _getNextApplePosition(state) : state.apple)
 
+const _getBaitEaten = (state: GameState): number => (_willEat(state) ? state.baitEaten + 1 : state.baitEaten)
+
 const _getNextMoves = (state: GameState): Point[] => (state.moves.length > 1 ? drop(1, state.moves) : state.moves)
 
 const _getNextSnake = (state: GameState): Point[] =>
@@ -57,7 +60,8 @@ const getNextState: (gameState: GameState) => GameState = applySpec({
   rows: prop('rows'),
   moves: _getNextMoves,
   snake: _getNextSnake,
-  apple: _getNextApple
+  apple: _getNextApple,
+  baitEaten: _getBaitEaten
 })
 
 const enqueueDirection = (state: GameState, move: Point): GameState =>

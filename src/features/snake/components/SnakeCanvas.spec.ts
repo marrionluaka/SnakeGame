@@ -2,12 +2,15 @@ import { range } from 'ramda'
 import { mount, config } from '@vue/test-utils'
 
 import SnakeCanvas from './SnakeCanvas.vue'
+import * as snakeModule from '../modules/snakeModule'
+import { DIRECTION } from '../modules/snakeModule'
 
 config.global.config.warnHandler = () => {}
 
 const mockAnimation = {
   start: jest.fn(),
-  stop: jest.fn()
+  stop: jest.fn(),
+  increaseSpeed: jest.fn()
 }
 let animationFn: any
 jest.mock('../modules/animationModule', () => ({
@@ -90,5 +93,53 @@ describe('Snake Canvas Specs', () => {
   it('stops the game when the snake eats itself or collides with the walls', () => {
     range(0, 18).forEach(() => animationFn())
     expect((ctx?.fillRect as jest.Mock).mock.calls.pop()).toEqual([0, 0, 100, 100])
+  })
+
+  it.each`
+    baitEaten | expected
+    ${3}      | ${200}
+    ${7}      | ${100}
+    ${12}     | ${50}
+    ${20}     | ${25}
+  `('increases the game speed based on the amount of bait eaten', async ({ baitEaten, expected }) => {
+    jest.spyOn(snakeModule, 'getNextState').mockReturnValue({
+      baitEaten,
+      cols: 20,
+      rows: 14,
+      snake: [{ x: 2, y: 2 }],
+      moves: [DIRECTION.RIGHT],
+      apple: { x: 0, y: 0 }
+    } as snakeModule.GameState)
+
+    wrapper = mount(SnakeCanvas)
+    await wrapper.vm.$nextTick()
+
+    expect(mockAnimation.increaseSpeed).toBeCalledWith(expected)
+  })
+
+  it('displays the amount of bait eaten', async () => {
+    jest.spyOn(snakeModule, 'getNextState').mockReturnValue({
+      baitEaten: 5,
+      cols: 20,
+      rows: 14,
+      snake: [{ x: 2, y: 2 }],
+      moves: [DIRECTION.RIGHT],
+      apple: { x: 0, y: 0 }
+    } as snakeModule.GameState)
+
+    wrapper = mount(SnakeCanvas)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('[data-test="snake-score"]').text()).toContain('5')
+  })
+
+  it('pauses the game', async () => {
+    await wrapper.find('[data-test="snake-pause"]').trigger('click')
+    expect(mockAnimation.stop).toBeCalled()
+  })
+
+  it('unpauses the game', async () => {
+    await wrapper.find('[data-test="snake-unpause"]').trigger('click')
+    expect(mockAnimation.start).toBeCalled()
   })
 })
