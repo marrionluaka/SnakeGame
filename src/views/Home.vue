@@ -6,7 +6,7 @@ main.snake-game.flex.justify-center.items-center.text-white.h-full
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import { SnakeCanvas } from '@/features/snake'
+import { SnakeCanvas } from '@/snake'
 
 export default defineComponent({
   name: 'Snake',
